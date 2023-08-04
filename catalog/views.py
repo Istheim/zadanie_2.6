@@ -4,7 +4,7 @@ from builtins import *
 
 
 def home(request):
-    return render(request, 'catalog/home.html')
+    return render(request, 'main/home.html')
 
 
 def contacts(request):
@@ -13,4 +13,4 @@ def contacts(request):
         phone = request.POST.get('phone')
         message = request.POST.get('message')
         print(f'{name}, {phone}, ({message})')
-        return render(request, 'catalog/contacts.html')
+    return render(request, 'main/contacts.html')
