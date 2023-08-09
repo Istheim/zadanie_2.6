@@ -8,7 +8,7 @@ class Product(models.Model):
     description = models.TextField(verbose_name='описание', **NULLABLE)
     image = models.ImageField(upload_to='preview/', verbose_name='превью', **NULLABLE)
     category = models.CharField(max_length=100, verbose_name='категория')
-    price = models.IntegerField(verbose_name='цена за покупку')
+    price = models.PositiveIntegerField(verbose_name='цена за покупку')
     first_data = models.DateTimeField(auto_now_add=True, verbose_name='дата создания')
     last_data = models.DateTimeField(verbose_name='дата последнего изменения')
 

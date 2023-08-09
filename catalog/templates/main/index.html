@@ -1,0 +1,32 @@
+{% extends 'main/home.html' %}
+
+{% block content%}
+<div class="row text-center">
+
+  <div>
+    <h1>Istheimstore магазин где вы сможете найти все айти-штучки</h1>
+  </div>
+
+  {% for object in object_list %}
+  <div class="col-3">
+    <div class="card mb-4 box-shadow">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">{{ object.name_prod }}</h3>
+          <h4 class="card-title pricing-card-title">{{ object.price_prod }} руб.</h4>
+          <img src="/media/123.jpeg" alt="Card image">
+          <p class="card-text">
+            {{ object.description_prod }}
+          </p>
+          <a href="{% url 'product' object.id %}" class="btn btn-primary">Купить</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% if forloop.counter|divisibleby:"4" and not forloop.last %}
+</div>
+<div class="row text-center">
+  {% endif %}
+  {% endfor %}
+</div>
+{% endblock %}
