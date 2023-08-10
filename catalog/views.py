@@ -37,16 +37,16 @@ def great_prod(request):
     """Представление страницы main/great_prod.html с формой загрузки нового прожукта"""
     product_for_create = []
     if request.method == 'POST':
-        product = {
-            'name_prod': request.POST.get('name'),
-            'description_prod': request.POST.get('description'),
-            'category_prod': request.POST.get('category'),
-            'price_prod': request.POST.get('price'),
-            'data_create_prod': datetime.now(),
-            'data_change_prod': datetime.now()
+        product_all = {
+            'title': request.POST.get('title'),
+            'description': request.POST.get('description'),
+            'category': request.POST.get('category'),
+            'price': request.POST.get('price'),
+            'first_data': datetime.now(),
+            'last_data': datetime.now()
         }
         product_for_create.append(
-            Product(**product)
+            Product(**product_all)
         )
         # загрузка нового продукта в БД
         Product.objects.bulk_create(product_for_create)

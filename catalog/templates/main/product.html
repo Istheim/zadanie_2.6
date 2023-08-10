@@ -1,4 +1,4 @@
-{% extends 'main/base.html' %}
+{% extends 'main/home.html' %}
 
 {% block content%}
 
@@ -11,9 +11,9 @@
 
     <!-- Правая часть с информацией о товаре -->
     <div class="col-md-8">
-      <h2>{{ product.name_prod }}</h2>
-      <p>Описание товара: {{ product.description_prod }}</p>
-      <p>Цена: {{ product.price_prod }} руб.</p>
+      <h2>{{ product.title }}</h2>
+      <p>Описание товара: {{ product.description }}</p>
+      <p>Цена: {{ product.price }} $.</p>
       <button class="btn btn-primary">Положить в корзину</button>
     </div>
 
