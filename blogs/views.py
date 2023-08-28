@@ -10,13 +10,13 @@ from builtins import *
 # Create your views here.
 class BlogCreateView(CreateView):
     model = Blog
-    fields = ('title', 'content', 'image', 'publication_on_off')
+    fields = ('title_post', 'content_post', 'image_post', 'publication_on_off')
     success_url = reverse_lazy('blogs:list')
 
     def form_valid(self, form):
         if form.is_valid():
             new_mat = form.save()
-            new_mat.slug = slugify(new_mat.title)
+            new_mat.slug = slugify(new_mat.title_post)
             new_mat.save()
 
         return super().form_valid(form)
@@ -24,13 +24,13 @@ class BlogCreateView(CreateView):
 
 class BlogUpdateView(UpdateView):
     model = Blog
-    fields = ('title', 'content', 'image', 'publication_on_off')
+    fields = ('title_post', 'content_post', 'image_post', 'publication_on_off')
     success_url = reverse_lazy('blogs:list')
 
     def form_valid(self, form):
         if form.is_valid():
             new_mat = form.save()
-            new_mat.slug = slugify(new_mat.title)
+            new_mat.slug = slugify(new_mat.title_post)
             new_mat.save()
 
         return super().form_valid(form)

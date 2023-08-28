@@ -1,4 +1,5 @@
 from django.db import models
+from builtins import *
 
 NULLABLE = {'blank': True, 'null': True}
 
@@ -31,3 +32,17 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'категория'
         verbose_name_plural = 'Категории'
+
+
+class Version(models.Model):
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    version_number = models.CharField(max_length=10)
+    version_name = models.CharField(max_length=100)
+    is_current = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if self.is_current:
+            # При установке этой версии как активной,
+            # устанавливаем все остальные версии для этого продукта как неактивные
+            Version.objects.filter(product=self.product).exclude(pk=self.pk).update(is_current=False)
+        super(Version, self).save(*args, **kwargs)

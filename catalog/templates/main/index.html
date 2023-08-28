@@ -7,6 +7,9 @@
     <h1>Istheimstore магазин где вы сможете найти все айти-штучки</h1>
   </div>
 
+  <a class="btn btn-primary mb-5" href="{% url 'create_product' %}">Добавить продукт</a>
+
+
   {% for object in object_list %}
   <div class="col-3">
     <div class="card mb-4 box-shadow">
@@ -19,6 +22,8 @@
             {{ object.description }}
           </p>
           <a href="{% url 'product' object.id %}" class="btn btn-primary">Купить</a>
+          <a href="{% url 'update_product' object.pk %}" class="btn btn-secondary mb-4">Изменить</a>
+          <a href="{% url 'delete' object.pk %}" class="btn btn-danger">Удалить</a>
         </div>
       </div>
     </div>
