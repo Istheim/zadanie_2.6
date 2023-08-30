@@ -1,5 +1,4 @@
 from django.shortcuts import render
-
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 from pytils.translit import slugify
@@ -12,6 +11,7 @@ class BlogCreateView(CreateView):
     model = Blog
     fields = ('title_post', 'content_post', 'image_post', 'publication_on_off')
     success_url = reverse_lazy('blogs:list')
+    template_name = 'main/blog_form.html'
 
     def form_valid(self, form):
         if form.is_valid():
@@ -26,6 +26,7 @@ class BlogUpdateView(UpdateView):
     model = Blog
     fields = ('title_post', 'content_post', 'image_post', 'publication_on_off')
     success_url = reverse_lazy('blogs:list')
+    template_name = 'main/blog_form.html'
 
     def form_valid(self, form):
         if form.is_valid():
@@ -41,6 +42,7 @@ class BlogUpdateView(UpdateView):
 
 class BlogListView(ListView):
     model = Blog
+    template_name = 'main/blog_list.html'
 
     def get_queryset(self, *args, **kwargs):
         queryset = super().get_queryset(*args, **kwargs)
@@ -50,6 +52,7 @@ class BlogListView(ListView):
 
 class BlogDetailView(DetailView):
     model = Blog
+    template_name = 'main/blog_detail.html'
 
     def get_object(self, queryset=None) -> Blog:
         self.object = super().get_object(queryset)
@@ -61,3 +64,4 @@ class BlogDetailView(DetailView):
 class BlogDeleteView(DeleteView):
     model = Blog
     success_url = reverse_lazy('blogs:list')
+    template_name = 'main/blog_confirm_delete.html'
