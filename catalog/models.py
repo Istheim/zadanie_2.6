@@ -1,4 +1,8 @@
 from django.db import models
+from django.conf import settings
+from django.contrib.auth.models import Group, Permission
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from builtins import *
 
 NULLABLE = {'blank': True, 'null': True}
@@ -12,8 +16,11 @@ class Product(models.Model):
     price = models.PositiveIntegerField(verbose_name='цена за покупку')
     first_data = models.DateTimeField(auto_now_add=True, verbose_name='дата создания')
     last_data = models.DateTimeField(verbose_name='дата последнего изменения')
+    is_active = models.BooleanField(default=True, verbose_name='опубликован')
+    lashed = models.ForeignKey(settings.AUTH_USER_MODEL, **NULLABLE, on_delete=models.SET_NULL, verbose_name='привязка')
 
-    def __str__(self):
+
+def __str__(self):
         return f'{self.title} {self.price} {self.category}'
 
     class Meta:
@@ -30,8 +37,16 @@ class Category(models.Model):
         return f'{self.title} {self.description}'
 
     class Meta:
-        verbose_name = 'категория'
-        verbose_name_plural = 'Категории'
+        ordering = ('name',)
+        verbose_name = 'Продукт'
+        verbose_name_plural = 'Продукты'
+        permissions = [
+            (
+                "set_published_status",
+                "Can publish post",
+
+            )
+        ]
 
 
 class Version(models.Model):
@@ -53,3 +68,22 @@ class Version(models.Model):
         verbose_name = "версия"
         verbose_name_plural = "версии"
 
+
+class Contact(models.Model):
+    name = models.CharField(max_length=100, verbose_name='name')
+    phone = models.IntegerField(unique=True, null=False, blank=False)
+    message = models.TextField(verbose_name='message')
+
+    def __str__(self):
+        return self.name
+
+def toggle_activity(request, pk):
+    product_item = get_object_or_404(Product, pk=pk)
+    if product_item.is_active:
+        product_item.is_active = False
+    else:
+        product_item.is_active = True
+
+    product_item.save()
+
+    return redirect(reverse('home'))

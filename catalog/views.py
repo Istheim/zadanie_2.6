@@ -1,12 +1,13 @@
 from datetime import datetime
 
+from django.contrib.auth.mixins import LoginRequiredMixin, LoginRequiredMixin, UserPassesTestMixin
 from django.forms import inlineformset_factory
 from django.shortcuts import render, get_object_or_404
 from builtins import *
 from pytils.translit import slugify
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from catalog.models import Product, Version
+from catalog.models import Product, Version, Category
 from catalog.forms import ProductForm, VersionForm
 
 
@@ -50,7 +51,7 @@ class ProductDetailView(DetailView):
 #    return render(request, 'main/great_prod.html')
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('index')
@@ -65,7 +66,7 @@ class ProductCreateView(CreateView):
         return super().form_valid(form)
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('index')
@@ -95,10 +96,13 @@ class ProductUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('index')
     template_name = 'main/product_confirm_delete.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
 
 class VersionListView(ListView):
@@ -110,3 +114,65 @@ class VersionCreateView(CreateView):
     model = Version
     form_class = VersionForm
     success_url = reverse_lazy('main/version.html')
+
+class CategoryListView(LoginRequiredMixin, ListView):
+    """Главная старница со списком товаров"""
+    model = Category
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['categories'] = get_cached_categories()
+        return context_data
+
+
+class CategoryView(LoginRequiredMixin, ListView):
+    model = Product
+    template_name = 'category_products.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        category = Category.objects.get(pk=self.kwargs['pk'])
+        return Product.objects.filter(category=category)
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['categories'] = get_cached_categories()
+        return context_data
+
+
+class CategoryCreateView(LoginRequiredMixin, CreateView):
+    model = Category
+    form_class = CategoryForm
+    success_url = reverse_lazy('category_list')
+
+
+class CategoryUpdateView(LoginRequiredMixin, UpdateView):
+    model = Category
+    form_class = CategoryForm
+    success_url = reverse_lazy('category_list')
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        CategoryFormset = inlineformset_factory(Category, Product, form=CategoryForm, extra=1)
+        if self.request.method == 'POST':
+            context_data['formset'] = CategoryFormset(self.request.POST, instance=self.object)
+        else:
+            context_data['formset'] = CategoryFormset(instance=self.object)
+
+        return context_data
+
+    def form_valid(self, form):
+        formset = self.get_context_data()['formset']
+        self.object = form.save()
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
+        return super().form_valid(form)
+
+
+class CategoryDeleteView(LoginRequiredMixin, DeleteView):
+    model = Category
+    success_url = reverse_lazy('category_list')
+
+    def test_func(self):
+        return self.request.user.is_superuser
