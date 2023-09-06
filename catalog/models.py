@@ -17,10 +17,11 @@ class Product(models.Model):
     first_data = models.DateTimeField(auto_now_add=True, verbose_name='дата создания')
     last_data = models.DateTimeField(verbose_name='дата последнего изменения')
     is_active = models.BooleanField(default=True, verbose_name='опубликован')
-    lashed = models.ForeignKey(settings.AUTH_USER_MODEL, **NULLABLE, on_delete=models.SET_NULL, verbose_name='привязка')
 
+    user_boss = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE,
+                                  verbose_name='Продавец')
 
-def __str__(self):
+    def __str__(self):
         return f'{self.title} {self.price} {self.category}'
 
     class Meta:
@@ -29,24 +30,17 @@ def __str__(self):
 
 
 class Category(models.Model):
-    title = models.CharField(max_length=200, verbose_name='наименование')
-    description = models.TextField(verbose_name='описание')
-    #created_at = models.DateTimeField(auto_now_add=True, verbose_name='когда был создан')
+    name_category = models.CharField(max_length=100, verbose_name='Наименование категории', default='Значение по '
+                                                                                                    'умолчанию')
+    category_description = models.CharField(max_length=100, verbose_name='Описание категории', default='Значение по '
+                                                                                                       'умолчанию')
 
     def __str__(self):
-        return f'{self.title} {self.description}'
+        return f'{self.name_category} {self.category_description}'
 
     class Meta:
-        ordering = ('name',)
-        verbose_name = 'Продукт'
-        verbose_name_plural = 'Продукты'
-        permissions = [
-            (
-                "set_published_status",
-                "Can publish post",
-
-            )
-        ]
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
 
 
 class Version(models.Model):
@@ -76,6 +70,7 @@ class Contact(models.Model):
 
     def __str__(self):
         return self.name
+
 
 def toggle_activity(request, pk):
     product_item = get_object_or_404(Product, pk=pk)

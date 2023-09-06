@@ -11,6 +11,7 @@
 
     <!-- Правая часть с информацией о товаре -->
     <div class="col-md-8">
+      <p>Товар создал: {{ product.user_boss|default:"НЕТ СОЗДАТЕЛЯ" }}</p>
       <h2>{{ product.title }}</h2>
       <p>Описание товара: {{ product.description }}</p>
       <p>Цена: {{ product.price }} $.</p>

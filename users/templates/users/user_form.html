@@ -1,25 +1,31 @@
-{% extends 'catalog/home.html' %}
-{% load filters %}
-{% block content%}
-<div class="col-12">
-    <form class="row" method="post" enctype="multipart/form-data">
-        <div class="col-3"></div>
-        <div class="col-6">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">
-                        <h3>Профиль</h3>
-                    </div>
-                </div>
-                <div class="card-body">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-success">Сохранить</button>
-                    <a href="{% url 'users:generate_password_profile' %}" class="btn btn-danger w-50 mt-2">Сгенерировать новый пароль</a>
+{% extends 'main/home.html' %}
 
-                </div>
+{% block content%}
+
+<div class="col-6">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                Профайл
             </div>
+
         </div>
-    </form>
+
+        <div class="image-container">
+            <img src="/media/{{ object.avatar }}" alt="Card image" class="card-image">
+        </div>
+
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success">Сохранить</button>
+            </form>
+        </div>
+    </div>
+    <a href="{% url 'users:generate_new_password' %}" class="btn btn-danger">Новый пароль</a>
 </div>
+
+</div>
+
 {% endblock %}
