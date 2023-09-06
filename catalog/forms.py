@@ -2,7 +2,7 @@ from builtins import super
 
 from django import forms
 
-from catalog.models import Product, Version
+from catalog.models import Product, Version, Category
 
 
 class StyleFormMixin:
@@ -14,17 +14,17 @@ class StyleFormMixin:
 
 
 class ProductForm(StyleFormMixin, forms.ModelForm):
-
     class Meta:
         model = Product
         # fields = '__all__'  # Все поля
         # fields = ('name_prod', 'description_prod', 'img_prod')
-        exclude = ('user_boss',) # поля которые исключаются
+        exclude = ('user_boss',)  # поля которые исключаются
 
     def clean_name_prod(self):
         cleaned_data = self.cleaned_data['name_prod']
 
-        if cleaned_data.title() in ['Казино', 'Криптовалюта', 'Крипта', 'Биржа', 'Дешево', 'Бесплатно', 'Обман', 'Полиция',
+        if cleaned_data.title() in ['Казино', 'Криптовалюта', 'Крипта', 'Биржа', 'Дешево', 'Бесплатно', 'Обман',
+                                    'Полиция',
                                     'Радар']:
             raise forms.ValidationError('Ой, всё, запрещенное слово')
 
@@ -33,7 +33,8 @@ class ProductForm(StyleFormMixin, forms.ModelForm):
     def clean_description_prod(self):
         cleaned_data = self.cleaned_data['description_prod']
 
-        if cleaned_data.title() in ['Казино', 'Криптовалюта', 'Крипта', 'Биржа', 'Дешево', 'Бесплатно', 'Обман', 'Полиция',
+        if cleaned_data.title() in ['Казино', 'Криптовалюта', 'Крипта', 'Биржа', 'Дешево', 'Бесплатно', 'Обман',
+                                    'Полиция',
                                     'Радар']:
             raise forms.ValidationError('Ой, всё, запрещенное слово')
 
@@ -47,3 +48,14 @@ class VersionForm(StyleFormMixin, forms.ModelForm):
         # fields = ('name_prod', 'description_prod', 'img_prod')
         # exclude = () # поля которые исключаются
 
+
+class CategoryForm(StyleFormMixin, forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+
+class VersionForm(StyleFormMixin, forms.ModelForm):
+    class Meta:
+        model = Version
+        fields = '__all__'
