@@ -28,6 +28,13 @@ class Product(models.Model):
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
 
+        permissions = [
+            (
+                'set_published',
+                'Can publish posts'
+            )
+        ]
+
 
 class Category(models.Model):
     name_category = models.CharField(max_length=100, verbose_name='Наименование категории', default='Значение по '
