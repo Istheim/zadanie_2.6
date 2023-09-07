@@ -150,6 +150,12 @@ LOGIN_URL = '/users'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = "Istheim777@yandex.ru"
+EMAIL_HOST_PASSWORD = 'ASDFGhjkl1289'
+EMAIL_USE_SSL = True
+
 
 CACHE_ENABLED = os.getenv("CACHE_ENABLED") == 'True'
 
