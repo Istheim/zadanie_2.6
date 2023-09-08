@@ -78,6 +78,23 @@ class ProductModeratorUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Up
             formset.save()
         return super().form_valid(form)
 
+    def form_valid(self, form):
+        formset = self.get_context_data()['formset']
+        self.object = form.save()
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
+        return super().form_valid(form)
+
+    def has_permission(self):
+        # Проверка прав модератора: только изменение продукта, кроме описания
+        if (
+                'description' in self.request.POST
+                and 'other_fields' not in self.request.POST
+        ):
+            return False
+        return super().has_permission()
+
 
 class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Product
@@ -87,20 +104,18 @@ class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView)
     permission_required = 'catalog.add_product'
 
     def form_valid(self, form):
-        self.object = form.save()
+        self.object = form.save(commit=False)
         self.object.user_boss = self.request.user
         self.object.save()
-
-        # def form_valid(self, form):
-        #     if form.is_valid():
-        #         new_mat = form.save()
-        #         new_mat.slug = slugify(new_mat.title)
-        #         new_mat.save()
-
         return super().form_valid(form)
 
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['lashed'] = self.request.user
+        return initial
 
-class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('index')
