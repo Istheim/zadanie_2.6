@@ -1,24 +1,32 @@
 {% extends 'main/home.html' %}
 
-{%  block content %}
-<div class="row">
-  <div class="6">
-    <div class="card">
-      <div class="card-body">
-        <form method="post" enctype="multipart/form-data">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <button type="submit" class="btn btn-success">
-            {% if object %}
-            Изменить
-            {% else %}
-            Создать статью
-            {% endif %}
+{% block content%}
+<div class="row text-center">
 
-          </button>
-        </form>
+  <div>
+    <h1>Блог Istheim</h1>
+    <a href="/blog/create" class="btn btn-primary">Создать статью</a>
+  </div>
+
+  {% for object in object_list %}
+  <div class="col-3">
+    <div class="card mb-4 box-shadow">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">{{ object.title_post }}</h3>
+          <img src="/media/{{ object.image }}" alt="Card image">
+
+          <a href="{% url 'blogs:view' object.pk %}" class="btn btn-primary">Читать</a>
+          <a href="{% url 'blogs:edit' object.pk %}" class="btn btn-primary">Изменить</a>
+          <a href="{% url 'blogs:delete' object.pk %}" class="btn btn-primary">Удалить</a>
+        </div>
       </div>
     </div>
   </div>
+  {% if forloop.counter|divisibleby:"4" and not forloop.last %}
 </div>
-{%  endblock %}
+<div class="row text-center">
+  {% endif %}
+  {% endfor %}
+</div>
+{% endblock %}

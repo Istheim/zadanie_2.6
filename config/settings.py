@@ -17,7 +17,8 @@ from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv = (BASE_DIR / '.env')
+dot_env = os.path.join(BASE_DIR, '.env')
+load_dotenv(dotenv_path=dot_env)
 
 
 # Quick-start development settings - unsuitable for production
@@ -155,6 +156,7 @@ EMAIL_PORT = 465
 EMAIL_HOST_USER = "Istheim777@yandex.ru"
 EMAIL_HOST_PASSWORD = 'ASDFGhjkl1289'
 EMAIL_USE_SSL = True
+
 
 
 CACHE_ENABLED = os.getenv("CACHE_ENABLED") == 'True'
