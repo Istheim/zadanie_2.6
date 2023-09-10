@@ -34,7 +34,11 @@
         </p>
         {% if user.is_authenticated %}
         <a href="{% url 'product' object.pk %}" class="btn btn-primary mb-4">Купить</a>
+        {% if user.is_superuser or object.user_boss == user %}
         <a href="{% url 'update_product' object.pk %}" class="btn btn-secondary mb-4">Изменить</a>
+        {% else %}
+        <p>Вы не можете редактировать этот продукт, так как вы не являетесь его владельцем.</p>
+        {% endif %}
         <a href="{% url 'delete' object.pk %}" class="btn btn-danger">Удалить</a>
         {% else %}
         <a href="{% url 'product' object.pk %}" class="btn btn-primary mb-4">Купить</a>
@@ -42,7 +46,6 @@
           <h6>Войдите, чтобы изменить или удалить продукт</h6>
           <a class="p-2 btn btn-danger" href="{% url 'users:login' %}">Войти</a>
         </div>
-
         {% endif %}
 
       </div>

@@ -54,6 +54,9 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
         return context_data
 
 
+from django.http import HttpResponseForbidden  # Импорт класса для отправки ошибки 403 Forbidden
+
+
 class ProductModeratorUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
@@ -78,30 +81,18 @@ class ProductModeratorUpdateView(LoginRequiredMixin, PermissionRequiredMixin, Up
             formset.save()
         return super().form_valid(form)
 
-    def form_valid(self, form):
-        formset = self.get_context_data()['formset']
-        self.object = form.save()
-        if formset.is_valid():
-            formset.instance = self.object
-            formset.save()
-        return super().form_valid(form)
 
-    def has_permission(self):
-        # Проверка прав модератора: только изменение продукта, кроме описания
-        if (
-                'description' in self.request.POST
-                and 'other_fields' not in self.request.POST
-        ):
-            return False
-        return super().has_permission()
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
 
-class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('index')
     template_name = 'main/product_form.html'
-    permission_required = 'catalog.add_product'
 
     def form_valid(self, form):
         self.object = form.save(commit=False)

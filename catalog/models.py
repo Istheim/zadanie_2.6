@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from builtins import *
 
-
 NULLABLE = {'blank': True, 'null': True}
 
 
@@ -14,10 +13,10 @@ class Product(models.Model):
     title = models.CharField(max_length=200, verbose_name='наименование', default="Default Title")
     description = models.TextField(verbose_name='описание', **NULLABLE)
     image = models.ImageField(upload_to='preview/', verbose_name='превью', **NULLABLE)
-    category = models.CharField(max_length=100, verbose_name='категория')
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL, **NULLABLE, verbose_name='категория')
     price = models.PositiveIntegerField(verbose_name='цена за покупку')
     first_data = models.DateTimeField(auto_now_add=True, verbose_name='дата создания')
-    last_data = models.DateTimeField(verbose_name='дата последнего изменения')
+    last_data = models.DateTimeField(auto_now=True, verbose_name='дата последнего изменения')
     is_active = models.BooleanField(default=True, verbose_name='опубликован')
     user_boss = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE,
                                   verbose_name='Продавец')
@@ -35,6 +34,7 @@ class Product(models.Model):
                 'Can publish posts'
             )
         ]
+
 
 
 class Category(models.Model):
@@ -89,4 +89,5 @@ def toggle_activity(request, pk):
 
     product_item.save()
 
-    return redirect(reverse('home'))
+    return redirect(reverse('index'))
+

@@ -46,6 +46,21 @@ class ProductsForm(StyleFormMixin, forms.ModelForm):
         model = Product
         fields = ('title', 'description', 'category', 'price', 'is_active')
 
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(ProductForm, self).__init__(*args, **kwargs)
+
+        # Проверяем, является ли пользователь модератором
+        if not self.user_has_moderator_permission(user):
+            self.fields['title'].widget.attrs['readonly'] = True
+            self.fields['description'].widget.attrs['readonly'] = True
+            self.fields['is_active'].widget.attrs['readonly'] = True
+
+    def user_has_moderator_permission(self, user):
+        if user and user.has_perm('catalog.change_product'):
+            return True
+        return False
+
 
 class VersionForm(StyleFormMixin, forms.ModelForm):
     class Meta:
